@@ -16,11 +16,14 @@ class DatabaseHandler:
     def __init__(self, config):
         if not hasattr(self, 'initialized'):  # Prevent re-initialization
 
-            # URL encode the password to avoid authentication issues with special characters
-            encoded_password = urllib.parse.quote_plus(config["MONGO_PASSWORD"])
-
             # Build connection string
-            MONGO_URI = f'mongodb://{config["MONGO_USER"]}:{encoded_password}@{config["MONGO_URI"]}/{config["MONGO_AUTH_DB"]}'
+            if config["MONGO_USER"] and config["MONGO_PASSWORD"]:
+                # Encode password to handle special characters
+                encoded_password = urllib.parse.quote_plus(config["MONGO_PASSWORD"])
+                MONGO_URI = f'mongodb://{config["MONGO_USER"]}:{encoded_password}@{config["MONGO_URI"]}/{config["MONGO_AUTH_DB"]}'
+            else:
+                # No authentication
+                MONGO_URI = f'mongodb://{config["MONGO_URI"]}/'
             if (config['MONGO_TYPE']=='single'):
                 self.mongo_client = pymongo.MongoClient(
                     MONGO_URI,

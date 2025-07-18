@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from typing import Tuple
+from typing import Tuple, Union
 
 
 class FactorUtils:
@@ -89,7 +89,7 @@ class FactorUtils:
         return result
 
     @staticmethod
-    def STDDEV(series: pd.Series, window: int = 20) -> pd.Series:
+    def STDDEV(series: pd.Series, window: int = 20) -> Union[pd.Series, pd.DataFrame]:
         """Calculate rolling standard deviation"""
 
         def rolling_std(group):
@@ -101,7 +101,7 @@ class FactorUtils:
         return result
 
     @staticmethod
-    def CORRELATION(series1: pd.Series, series2: pd.Series, window: int = 20) -> pd.Series:
+    def CORRELATION(series1: pd.Series, series2: pd.Series, window: int = 20) -> Union[pd.Series, pd.DataFrame]:
         """Calculate rolling correlation coefficient
 
         Args:
@@ -127,12 +127,12 @@ class FactorUtils:
         return pd.Series(np.where(condition, true_value, false_value), index=condition.index)
 
     @staticmethod
-    def DELAY(series: pd.Series, period: int = 1) -> pd.Series:
+    def DELAY(series: pd.Series, period: int = 1) -> Union[pd.Series, pd.DataFrame]:
         """Calculate lagged values"""
         return series.groupby(level='symbol').shift(period)
 
     @staticmethod
-    def SUM(series: pd.Series, window: int = 20) -> pd.Series:
+    def SUM(series: pd.Series, window: int = 20) -> Union[pd.Series, pd.DataFrame]:
         """Calculate rolling sum"""
         # Handle FactorSeries type
         if hasattr(series, 'series'):
@@ -182,7 +182,7 @@ class FactorUtils:
     #     return np.sign(series) * np.abs(series) ** power
 
     @staticmethod
-    def TS_RANK(series: pd.Series, window: int = 20) -> pd.Series:
+    def TS_RANK(series: pd.Series, window: int = 20) -> Union[pd.Series, pd.DataFrame]:
         """Calculate time series rank"""
 
         def ts_rank(group):
@@ -193,7 +193,7 @@ class FactorUtils:
         return series.groupby(level='symbol').apply(ts_rank).droplevel(0)
 
     @staticmethod
-    def DELTA(series: pd.Series, period: int = 1) -> pd.Series:
+    def DELTA(series: pd.Series, period: int = 1) -> Union[pd.Series, pd.DataFrame]:
         """Calculate difference"""
         return series.groupby(level='symbol').diff(period)
 
@@ -203,17 +203,17 @@ class FactorUtils:
         return volume.groupby(level='symbol').rolling(window=window).mean().droplevel(0)
 
     @staticmethod
-    def TS_MIN(series: pd.Series, window: int = 20) -> pd.Series:
+    def TS_MIN(series: pd.Series, window: int = 20) -> Union[pd.Series, pd.DataFrame]:
         """Calculate time series minimum"""
         return series.groupby(level='symbol').rolling(window=window, min_periods=1).min().droplevel(0)
 
     @staticmethod
-    def TS_MAX(series: pd.Series, window: int = 20) -> pd.Series:
+    def TS_MAX(series: pd.Series, window: int = 20) -> Union[pd.Series, pd.DataFrame]:
         """Calculate time series maximum"""
         return series.groupby(level='symbol').rolling(window=window, min_periods=1).max().droplevel(0)
 
     @staticmethod
-    def TS_ARGMIN(series: pd.Series, window: int = 20) -> pd.Series:
+    def TS_ARGMIN(series: pd.Series, window: int = 20) -> Union[pd.Series, pd.DataFrame]:
         """Calculate time series minimum value position"""
 
         def rolling_argmin(group):
@@ -224,7 +224,7 @@ class FactorUtils:
         return series.groupby(level='symbol').apply(rolling_argmin).droplevel(0)
 
     @staticmethod
-    def DECAY_LINEAR(series: pd.Series, window: int = 20) -> pd.Series:
+    def DECAY_LINEAR(series: pd.Series, window: int = 20) -> Union[pd.Series, pd.DataFrame]:
         """Calculate linear decay weighted average"""
         weights = np.linspace(1, 0, window)
 
@@ -236,7 +236,7 @@ class FactorUtils:
         ).droplevel(0)
 
     @staticmethod
-    def SCALE(series: pd.Series) -> pd.Series:
+    def SCALE(series: pd.Series) -> Union[pd.Series, pd.DataFrame]:
         """Scale series to [-1, 1] range"""
         # Save original index
         original_index = series.index
@@ -265,24 +265,24 @@ class FactorUtils:
         return series.groupby(level='date').apply(lambda x: x - x.mean())
 
     @staticmethod
-    def PRODUCT(series: pd.Series, window: int = 20) -> pd.Series:
+    def PRODUCT(series: pd.Series, window: int = 20) -> Union[pd.Series, pd.DataFrame]:
         """Calculate rolling product"""
         return series.groupby(level='symbol').rolling(window=window, min_periods=1).apply(
             lambda x: np.prod(x)
         ).droplevel(0)
 
     @staticmethod
-    def LOG(series: pd.Series) -> pd.Series:
+    def LOG(series: pd.Series) -> Union[pd.Series, pd.DataFrame]:
         """Calculate natural logarithm"""
         return pd.Series(np.log(series), index=series.index)
 
     @staticmethod
-    def POWER(series: pd.Series, power: float) -> pd.Series:
+    def POWER(series: pd.Series, power: float) -> Union[pd.Series, pd.DataFrame]:
         """Calculate power"""
         return pd.Series(np.power(series, power), index=series.index)
 
     @staticmethod
-    def COVARIANCE(series1: pd.Series, series2: pd.Series, window: int = 20) -> pd.Series:
+    def COVARIANCE(series1: pd.Series, series2: pd.Series, window: int = 20) -> Union[pd.Series, pd.DataFrame]:
         """Calculate rolling covariance"""
 
         def rolling_cov(s1, s2, window):
@@ -304,14 +304,14 @@ class FactorUtils:
     #     return np.sign(series)
 
     @staticmethod
-    def MIN(series1: pd.Series, series2: pd.Series | float) -> pd.Series:
+    def MIN(series1: pd.Series, series2: Union[pd.Series, float]) -> Union[pd.Series, pd.DataFrame]:
         """Calculate element-wise minimum of two series or series and scalar"""
         if isinstance(series2, (int, float)):
             return pd.Series(np.minimum(series1, series2), index=series1.index)
         return pd.Series(np.minimum(series1, series2), index=series1.index)
 
     @staticmethod
-    def MAX(series1: pd.Series, series2: pd.Series | float) -> pd.Series:
+    def MAX(series1: pd.Series, series2: Union[pd.Series, float]) -> Union[pd.Series, pd.DataFrame]:
         """Calculate element-wise maximum of two series or series and scalar"""
         # Handle FactorSeries type
         if hasattr(series1, 'series'):
@@ -331,7 +331,7 @@ class FactorUtils:
         return condition.astype(float)
 
     @staticmethod
-    def ABS(series: pd.Series) -> pd.Series:
+    def ABS(series: pd.Series) -> Union[pd.Series, pd.DataFrame]:
         """Calculate absolute value"""
         return pd.Series(np.abs(series), index=series.index)
 
@@ -459,7 +459,7 @@ class FactorUtils:
         return S.ewm(alpha=A, adjust=False).mean()
 
     @staticmethod
-    def WMA(S: pd.Series, N: int) -> pd.Series:
+    def WMA(S: pd.Series, N: int) -> Union[pd.Series, pd.DataFrame]:
         """Calculate N-period weighted moving average: Yn = (1*X1+2*X2+3*X3+...+n*Xn)/(1+2+3+...+Xn)"""
         return S.rolling(N).apply(lambda x: x[::-1].cumsum().sum() * 2 / N / (N + 1), raw=True)
 
@@ -489,12 +489,12 @@ class FactorUtils:
         return S.rolling(d).apply(lambda x: (x * np.arange(1, d + 1)).sum() * 2 / d / (d + 1), raw=True)
 
     @staticmethod
-    def SIGN(S: pd.Series) -> pd.Series:
+    def SIGN(S: pd.Series) -> Union[pd.Series, pd.DataFrame]:
         """Calculate sign(X) for series"""
         return pd.Series(np.sign(S), index=S.index)
 
     @staticmethod
-    def SIGNEDPOWER(S: pd.Series, n: float) -> pd.Series:
+    def SIGNEDPOWER(S: pd.Series, n: float) -> Union[pd.Series, pd.DataFrame]:
         """Calculate sign(X)*(abs(X)^n)"""
         return pd.Series(np.sign(S) * np.abs(S) ** n, index=S.index)
 

@@ -18,6 +18,74 @@
 “你正在寻找的因子，此刻也在寻找你”
 
 [点击报名](https://www.pandaai.online/factorhub/factorcompetition)
+
+## 🚀 快速开始
+
+### 环境要求
+- Python 3.9+
+- MongoDB 4.4+
+- 8GB+ RAM (推荐)
+
+### 安装步骤
+
+1. **克隆项目**
+```bash
+git clone <repository-url>
+cd panda_factor
+```
+
+2. **安装依赖**
+```bash
+pip install -r requirements.txt
+```
+
+3. **安装子模块**
+```bash
+# 安装各个子模块
+cd panda_common && pip install -e . && cd ..
+cd panda_data && pip install -e . && cd ..
+cd panda_factor && pip install -e . && cd ..
+cd panda_llm && pip install -e . && cd ..
+cd panda_factor_server && pip install -e . && cd ..
+cd panda_data_hub && pip install -e . && cd ..
+cd panda_web && pip install -e . && cd ..
+```
+
+4. **配置数据库**
+```bash
+# macOS 安装 MongoDB
+brew tap mongodb/brew
+brew install mongodb-community
+brew services start mongodb/brew/mongodb-community
+
+# 或者使用 Docker
+docker run -d -p 27017:27017 --name mongodb mongo:latest
+```
+
+5. **配置文件**
+编辑 `panda_common/panda_common/config.yaml`，确保数据库连接信息正确：
+```yaml
+MONGO_USER: "panda"
+MONGO_PASSWORD: "panda"
+MONGO_URI: "127.0.0.1:27017"
+MONGO_AUTH_DB: "admin"
+MONGO_DB: "panda"
+```
+
+6. **启动服务**
+```bash
+# 启动主服务器
+cd panda_factor_server
+python -m panda_factor_server
+
+# 或者在另一个终端启动数据更新服务
+cd panda_data_hub
+python -m panda_data_hub._main_auto_
+```
+
+7. **访问应用**
+打开浏览器访问：http://localhost:8111
+
 ## 概述
 
 PandaFactor 提供了一系列高性能的量化算子，用于金融数据分析、技术指标计算和因子构建，并且提供了一系列的可视化图表。

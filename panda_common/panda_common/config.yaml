@@ -28,8 +28,8 @@ PASSWORD: xxxxxx
 
 
 # 数据库，注意：密码中包含特殊字符，在连接时会自动进行 URL 编码
-MONGO_USER: "panda"
-MONGO_PASSWORD: "panda"
+MONGO_USER: ""
+MONGO_PASSWORD: ""
 MONGO_URI: "127.0.0.1:27017"
 MONGO_AUTH_DB: "admin"
 MONGO_DB: "panda"
@@ -37,7 +37,7 @@ MONGO_DB: "panda"
 # - "single": 单节点模式，适用于开发环境或小型应用
 # - "replica_set": 副本集模式，提供高可用性和数据冗余
 # - "sharded": 分片模式，用于大规模数据存储（待实现）
-MONGO_TYPE: "replica_set"
+MONGO_TYPE: "single"
 MONGO_REPLICA_SET: "rs0"
 
 # OpenAI配置
@@ -49,4 +49,4 @@ LLM_BASE_URL: "https://api.deepseek.com/v1"
 # 日志配置
 LOG_LEVEL: "DEBUG"
 log_file: "logs/data_cleaner.log"
-log_rotation: "1 MB" 
+log_rotation: "1 MB"
